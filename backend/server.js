@@ -28,6 +28,24 @@ app.get("/", (req, res) => {
     res.send("Student Task Manager Backend is Running!");
 });
 
+// CREATE TASK
+app.post("/api/tasks", authMiddleware, async (req, res) => {
+    try {
+        const task = await Task.create(req.body);
+
+        res.status(201).json({
+            success: true,
+            message: "Task created successfully",
+            task
+        });
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
+});
+
 // GET TASKS WITH SEARCH AND STATUS FILTERING
 app.get("/api/tasks", authMiddleware, async (req, res) => {
     try {
@@ -61,44 +79,6 @@ app.get("/api/tasks", authMiddleware, async (req, res) => {
             tasks
         });
 
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
-    }
-});
-
-// READ ALL TASKS
-app.get("/api/tasks", authMiddleware, async (req, res) => {
-    try {
-        
-const { search, status } = req.query;
-
-const filter = {};
-
-// Filter by completion status
-if (status === "completed") {
-    filter.completed = true;
-} else if (status === "pending") {
-    filter.completed = false;
-}
-
-// Search by title or description
-if (search) {
-    filter.$or = [
-        { title: { $regex: search, $options: "i" } },
-        { description: { $regex: search, $options: "i" } }
-    ];
-}
-
-const tasks = await Task.find(filter);
-
-
-        res.json({
-            success: true,
-            tasks
-        });
     } catch (error) {
         res.status(500).json({
             success: false,
