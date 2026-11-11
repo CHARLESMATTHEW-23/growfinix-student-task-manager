@@ -186,6 +186,29 @@ https://growfinix-student-task-manager.onrender.com
 
 https://github.com/CHARLESMATTHEW-23/growfinix-student-task-manager
 
+### 3. Live Deployment Links
+
+The Student Task Manager application is deployed online using Render.
+
+**Frontend – Live Website:**
+
+https://growfinix-student-task-manager-1.onrender.com
+
+**Backend – Live API:**
+
+https://growfinix-student-task-manager.onrender.com
+
+**GitHub Repository:**
+
+https://github.com/CHARLESMATTHEW-23/growfinix-student-task-manager
+
+**Hosting Platform:** Render
+
+**Database:** MongoDB Atlas
+
+The frontend is hosted as a Render Static Site, and the backend is hosted as a Render Web Service.
+
+
 ### 5. Version Control Using Git and GitHub
 
 - Uploaded the project source code to GitHub.
