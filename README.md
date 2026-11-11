@@ -87,3 +87,56 @@ Verified that deleted tasks no longer appear in the database.
    node server.js
 
 Backend URL: http://localhost:5001
+## Task 4 – Authentication and Smart Features
+
+### Features Implemented
+
+1. **User Registration**
+   - Users can register with their name, email, and password.
+   - Passwords are securely hashed using bcrypt.
+
+2. **User Login**
+   - Users can log in using their email and password.
+   - JWT tokens are generated after successful login.
+
+3. **JWT Authentication Middleware**
+   - Verifies JWT tokens.
+   - Protects task APIs from unauthorized access.
+
+4. **Protected Task APIs**
+   - Create tasks.
+   - View tasks.
+   - Update tasks.
+   - Delete tasks.
+
+5. **Smart Search and Filtering**
+   - Search tasks by title or description.
+   - Filter completed tasks.
+   - Filter pending tasks.
+
+### Technologies Used
+
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- bcryptjs
+- JSON Web Token (JWT)
+- Postman
+
+### API Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/auth/register` | Register user |
+| POST | `/api/auth/login` | Login user |
+| POST | `/api/tasks` | Create task |
+| GET | `/api/tasks` | Get all tasks |
+| PUT | `/api/tasks/:id` | Update task |
+| DELETE | `/api/tasks/:id` | Delete task |
+
+### Search and Filter Examples
+
+- `/api/tasks?search=React`
+- `/api/tasks?status=completed`
+- `/api/tasks?status=pending`
