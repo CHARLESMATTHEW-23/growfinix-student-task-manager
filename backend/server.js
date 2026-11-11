@@ -31,7 +31,10 @@ app.get("/", (req, res) => {
 // CREATE TASK
 app.post("/api/tasks", authMiddleware, async (req, res) => {
     try {
-        const task = await Task.create(req.body);
+        const task = await Task.create({
+            ...req.body,
+            user: req.user.userId
+        });
 
         res.status(201).json({
             success: true,
@@ -46,15 +49,17 @@ app.post("/api/tasks", authMiddleware, async (req, res) => {
     }
 });
 
+
 // GET TASKS WITH SEARCH AND STATUS FILTERING
+
 app.get("/api/tasks", authMiddleware, async (req, res) => {
     try {
         const { search, status } = req.query;
 
-        // Build the database filter
-        const filter = {};
+        const filter = {
+            user: req.user.userId
+        };
 
-        // Search by task title or description
         if (search) {
             filter.$or = [
                 { title: { $regex: search, $options: "i" } },
@@ -62,7 +67,6 @@ app.get("/api/tasks", authMiddleware, async (req, res) => {
             ];
         }
 
-        // Filter by task status
         if (status === "completed") {
             filter.completed = true;
         } else if (status === "pending") {
@@ -88,11 +92,17 @@ app.get("/api/tasks", authMiddleware, async (req, res) => {
 });
 
 // UPDATE TASK
-app.put("/api/tasks/:id", authMiddleware,async (req, res) => {
+
+app.put("/api/tasks/:id", authMiddleware, async (req, res) => {
     try {
-        const task = await Task.findByIdAndUpdate(
-            req.params.id,
-            req.body,
+        const { title, description, deadline, completed } = req.body;
+
+        const task = await Task.findOneAndUpdate(
+            {
+                _id: req.params.id,
+                user: req.user.userId
+            },
+            { title, description, deadline, completed },
             { new: true, runValidators: true }
         );
 
@@ -108,6 +118,7 @@ app.put("/api/tasks/:id", authMiddleware,async (req, res) => {
             message: "Task updated successfully",
             task
         });
+
     } catch (error) {
         res.status(400).json({
             success: false,
@@ -116,10 +127,15 @@ app.put("/api/tasks/:id", authMiddleware,async (req, res) => {
     }
 });
 
+
 // DELETE TASK
-app.delete("/api/tasks/:id",authMiddleware, async (req, res) => {
+
+app.delete("/api/tasks/:id", authMiddleware, async (req, res) => {
     try {
-        const task = await Task.findByIdAndDelete(req.params.id);
+        const task = await Task.findOneAndDelete({
+            _id: req.params.id,
+            user: req.user.userId
+        });
 
         if (!task) {
             return res.status(404).json({
@@ -132,6 +148,7 @@ app.delete("/api/tasks/:id",authMiddleware, async (req, res) => {
             success: true,
             message: "Task deleted successfully"
         });
+
     } catch (error) {
         res.status(400).json({
             success: false,
@@ -139,3 +156,4 @@ app.delete("/api/tasks/:id",authMiddleware, async (req, res) => {
         });
     }
 });
+
