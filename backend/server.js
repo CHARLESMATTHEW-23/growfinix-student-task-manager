@@ -28,18 +28,41 @@ app.get("/", (req, res) => {
     res.send("Student Task Manager Backend is Running!");
 });
 
-// CREATE TASK
-app.post("/api/tasks", authMiddleware,async (req, res) => {
+// GET TASKS WITH SEARCH AND STATUS FILTERING
+app.get("/api/tasks", authMiddleware, async (req, res) => {
     try {
-        const task = await Task.create(req.body);
+        const { search, status } = req.query;
 
-        res.status(201).json({
-            success: true,
-            message: "Task created successfully",
-            task
+        // Build the database filter
+        const filter = {};
+
+        // Search by task title or description
+        if (search) {
+            filter.$or = [
+                { title: { $regex: search, $options: "i" } },
+                { description: { $regex: search, $options: "i" } }
+            ];
+        }
+
+        // Filter by task status
+        if (status === "completed") {
+            filter.completed = true;
+        } else if (status === "pending") {
+            filter.completed = false;
+        }
+
+        const tasks = await Task.find(filter).sort({
+            createdAt: -1
         });
+
+        res.status(200).json({
+            success: true,
+            count: tasks.length,
+            tasks
+        });
+
     } catch (error) {
-        res.status(400).json({
+        res.status(500).json({
             success: false,
             message: error.message
         });
