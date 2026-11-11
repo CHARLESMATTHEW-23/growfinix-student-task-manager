@@ -3,12 +3,13 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const Task = require("./models/task");
+const authRoutes = require("./routes/authroutes");
+const authMiddleware = require("./middleware/authmiddleware");
 const app = express();
 const PORT = 5001;
-
 app.use(cors());
 app.use(express.json());
-
+app.use("/api/auth", authRoutes);
 // Connect to MongoDB Atlas
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => {
@@ -28,7 +29,7 @@ app.get("/", (req, res) => {
 });
 
 // CREATE TASK
-app.post("/api/tasks", async (req, res) => {
+app.post("/api/tasks", authMiddleware,async (req, res) => {
     try {
         const task = await Task.create(req.body);
 
@@ -46,9 +47,30 @@ app.post("/api/tasks", async (req, res) => {
 });
 
 // READ ALL TASKS
-app.get("/api/tasks", async (req, res) => {
+app.get("/api/tasks", authMiddleware, async (req, res) => {
     try {
-        const tasks = await Task.find();
+        
+const { search, status } = req.query;
+
+const filter = {};
+
+// Filter by completion status
+if (status === "completed") {
+    filter.completed = true;
+} else if (status === "pending") {
+    filter.completed = false;
+}
+
+// Search by title or description
+if (search) {
+    filter.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } }
+    ];
+}
+
+const tasks = await Task.find(filter);
+
 
         res.json({
             success: true,
@@ -63,7 +85,7 @@ app.get("/api/tasks", async (req, res) => {
 });
 
 // UPDATE TASK
-app.put("/api/tasks/:id", async (req, res) => {
+app.put("/api/tasks/:id", authMiddleware,async (req, res) => {
     try {
         const task = await Task.findByIdAndUpdate(
             req.params.id,
@@ -92,7 +114,7 @@ app.put("/api/tasks/:id", async (req, res) => {
 });
 
 // DELETE TASK
-app.delete("/api/tasks/:id", async (req, res) => {
+app.delete("/api/tasks/:id",authMiddleware, async (req, res) => {
     try {
         const task = await Task.findByIdAndDelete(req.params.id);
 
