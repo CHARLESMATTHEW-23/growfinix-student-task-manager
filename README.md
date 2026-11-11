@@ -140,3 +140,59 @@ Backend URL: http://localhost:5001
 - `/api/tasks?search=React`
 - `/api/tasks?status=completed`
 - `/api/tasks?status=pending`
+## Task 5 – Testing and Deployment
+
+### 1. Testing with Postman
+
+The application backend APIs were tested using Postman to verify their functionality.
+
+The following operations were tested successfully:
+
+- User Registration
+- User Login
+- JWT Authentication
+- Create a Task
+- Get All Tasks
+- Update a Task
+- Delete a Task
+- Search Tasks
+- Filter Tasks by Status (Pending and Completed)
+- Access protection using JWT tokens
+
+### 2. Bug Fixing and Debugging
+
+- Fixed API routing issues.
+- Corrected backend file paths and imports.
+- Improved task management API functionality.
+- Added JWT authentication middleware.
+- Implemented user-specific task access.
+- Verified API responses and error handling.
+
+### 3. Database Deployment
+
+- Integrated MongoDB Atlas as the cloud database.
+- Connected the backend application to MongoDB Atlas.
+- Verified database connectivity and task storage.
+
+### 4. Backend Deployment Using Render
+
+The Node.js and Express backend was successfully deployed using Render.
+
+**Live Backend URL:**
+
+https://growfinix-student-task-manager.onrender.com
+
+**GitHub Repository:**
+
+https://github.com/CHARLESMATTHEW-23/growfinix-student-task-manager
+
+### 5. Version Control Using Git and GitHub
+
+- Uploaded the project source code to GitHub.
+- Updated project files and documentation.
+- Used Git for version control.
+- Enabled automatic deployment through GitHub integration with Render.
+
+### 6. Conclusion
+
+Successfully completed the testing and backend deployment process for the Student Task Management application. The backend APIs were tested using Postman, MongoDB Atlas was integrated, and the backend was deployed successfully on Render.
